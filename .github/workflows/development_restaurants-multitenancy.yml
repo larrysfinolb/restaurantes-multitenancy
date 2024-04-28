@@ -10,22 +10,21 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  avoid-redundacy:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
+  artifact:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.x'
-
-      - name: npm install, build, and test
-        run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
@@ -38,7 +37,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [artifact]
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
@@ -46,6 +45,11 @@ jobs:
       id-token: write #This is required for requesting the JWT
 
     steps:
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
@@ -53,7 +57,13 @@ jobs:
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
-      
+
+      - name: Install and build
+        run: |
+          npm install -g pnpm @nestjs/cli
+          pnpm install
+          pnpm build
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -68,4 +78,3 @@ jobs:
           app-name: 'restaurants-multitenancy'
           slot-name: 'Production'
           package: .
-          
