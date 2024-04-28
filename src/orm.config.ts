@@ -15,6 +15,9 @@ export const ormConfigObject: TypeOrmModuleOptions = {
   namingStrategy: new SnakeNamingStrategy(),
   entities: [join(__dirname, './modules/public/**/*.entity{.ts,.js}')],
   migrations: [join(__dirname, './migrations/public/*{.ts,.js}')],
+  ssl: {
+    rejectUnauthorized: false, // Investigar si es seguro, pero es necesario para que funcione en Azure
+  },
 };
 
 export default new DataSource(ormConfigObject as PostgresConnectionOptions);
