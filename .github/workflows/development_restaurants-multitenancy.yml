@@ -7,10 +7,6 @@ on:
   push:
     branches:
       - development
-    paths-ignore:
-      - 'README.md'
-      - 'LICENSE'
-      - '.github/**'
   workflow_dispatch:
 
 jobs:
