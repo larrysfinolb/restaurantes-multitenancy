@@ -60,9 +60,9 @@ jobs:
 
       - name: Install and build
         run: |
-          npm install -g pnpm @nestjs/cli
-          pnpm install
-          pnpm build
+          npm install -g @nestjs/cli
+          npm install
+          npm run build
 
       - name: Login to Azure
         uses: azure/login@v1
