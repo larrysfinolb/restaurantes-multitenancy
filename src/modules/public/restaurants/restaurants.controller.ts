@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Restaurants } from './restaurants';
-import { CreateRestaurantDto } from './dto/createRestaurant.dto';
+import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { RestaurantEntity } from './entities/restaurant.entity';
 

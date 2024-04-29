@@ -1,9 +1,10 @@
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { getDataSource } from './modules/tenancy/tenancy.utils';
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function runRestaurantMigrations(schemas) {
   const migrationPromises = schemas
@@ -22,6 +23,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const dataSource = app.get(DataSource);
   const configService = app.get(ConfigService);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidUnknownValues: true,
+    }),
+  );
 
   await dataSource.runMigrations();
 

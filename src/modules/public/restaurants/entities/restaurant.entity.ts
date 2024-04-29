@@ -9,6 +9,10 @@ export class RestaurantEntity extends BaseEntity {
   name: string;
 
   @ApiProperty()
+  @Column()
+  country: string;
+
+  @ApiProperty()
   @Column({
     unique: true,
   })
@@ -20,7 +24,8 @@ export class RestaurantEntity extends BaseEntity {
   })
   email: string;
 
-  @ApiProperty()
-  @Column()
-  password: string;
+  @Column({
+    default: false,
+  })
+  confirmed: boolean;
 }

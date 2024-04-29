@@ -7,4 +7,13 @@ export default () => ({
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
   },
+  email: {
+    host: process.env.EMAIL_HOST,
+    port: parseInt(process.env.EMAIL_PORT, 10),
+    secure: process.env.EMAIL_SECURE,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  },
 });

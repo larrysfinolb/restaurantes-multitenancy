@@ -8,7 +8,7 @@ export class CreateRestaurantDto {
 
   @ApiProperty()
   @IsString()
-  subdomain: string;
+  username: string;
 
   @ApiProperty()
   @IsString()
@@ -17,4 +17,16 @@ export class CreateRestaurantDto {
   @ApiProperty()
   @IsString()
   password: string;
+
+  @ApiProperty()
+  @IsString()
+  restaurant: string;
+
+  @ApiProperty()
+  @IsString()
+  country: string;
+
+  @ApiProperty()
+  @IsString()
+  subdomain: string;
 }
