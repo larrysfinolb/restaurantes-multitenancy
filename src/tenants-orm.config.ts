@@ -10,6 +10,8 @@ export const tenantsOrmConfigObject: TypeOrmModuleOptions = {
   migrations: [join(__dirname, './migrations/tenanted/*{.ts,.js}')],
 };
 
-export default new DataSource(
-  tenantsOrmConfigObject as PostgresConnectionOptions,
-);
+export default new DataSource({
+  ...tenantsOrmConfigObject,
+  name: 'restaurant_template',
+  schema: 'restaurant_template',
+} as PostgresConnectionOptions);

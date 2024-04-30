@@ -1,5 +1,6 @@
 import { BaseEntity } from '@/base.entity';
 import { Column, Entity } from 'typeorm';
+import { CredentialEmbedded } from '../embeddables/credentials.embeddable';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -17,4 +18,7 @@ export class UserEntity extends BaseEntity {
 
   @Column()
   password: string;
+
+  @Column(() => CredentialEmbedded)
+  credential: CredentialEmbedded;
 }

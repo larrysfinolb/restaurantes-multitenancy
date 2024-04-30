@@ -7,6 +7,8 @@ import { getDataSource } from '@/modules/tenancy/tenancy.utils';
 import { MailerService } from '@/modules/mailer/mailer.service';
 import { UserEntity } from '@/modules/tenanted/users/entities/user.entity';
 import { hash } from 'bcrypt';
+import { JwtService } from '@/modules/jwt/jwt.service';
+import { ETokenType } from '@/modules/jwt/enums/token.-type.enum';
 
 @Injectable()
 export class Restaurants {
@@ -14,6 +16,7 @@ export class Restaurants {
     @InjectRepository(RestaurantEntity)
     private readonly restaurantRepository: Repository<RestaurantEntity>,
     private readonly mailerService: MailerService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async findAll() {
@@ -52,13 +55,18 @@ export class Restaurants {
     await dataSource.runMigrations();
 
     // Mas adelante se encuentra una explicación de por qué no se puede usar el create de UsersService
-    await this.createUser(createRestaurantDto, dataSource);
+    const user = await this.createUser(createRestaurantDto, dataSource);
 
+    const confirmationToken = await this.jwtService.generateToken(
+      user,
+      ETokenType.CONFIRMATION,
+    );
     await this.mailerService.sendWelcomeEmail({
       email: createRestaurantDto.email,
       name: createRestaurantDto.username,
       subdomain: createRestaurantDto.subdomain,
       restaurant: createRestaurantDto.restaurant,
+      token: confirmationToken,
     });
 
     await dataSource.destroy();

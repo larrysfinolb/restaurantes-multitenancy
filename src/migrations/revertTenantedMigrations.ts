@@ -17,7 +17,8 @@ export async function revertMigrations() {
 
     await Promise.all(
       schemas.map(async ({ schema_name }) => {
-        const connection = await getDataSource(schema_name);
+        const id = schema_name.split('_')[1];
+        const connection = await getDataSource(id);
         await connection.undoLastMigration();
         await connection.destroy();
       }),

@@ -12,6 +12,7 @@ import { IWelcomeTemplateData } from './interfaces/templates-data.interface';
 export class MailerService {
   private readonly transport: Transporter<SMTPTransport.SentMessageInfo>;
   private readonly email: string;
+  private readonly domain: string;
   private readonly templates: ITemplates;
 
   constructor(private readonly configService: ConfigService) {
@@ -19,6 +20,7 @@ export class MailerService {
 
     this.transport = createTransport(emailConfig);
     this.email = `"Restaurants" <${emailConfig.auth.user}>`;
+    this.domain = this.configService.get('domain');
     this.templates = {
       welcome: this.parseTemplate('welcome.hbs'),
     };
@@ -40,16 +42,18 @@ export class MailerService {
     name,
     restaurant,
     subdomain,
+    token,
   }: {
     email: string;
     name: string;
     restaurant: string;
     subdomain: string;
+    token: string;
   }) {
     const html = this.templates.welcome({
       name,
       restaurant,
-      link: `https://`,
+      link: `https://${this.domain}/${token}`,
       subdomain,
     });
 
