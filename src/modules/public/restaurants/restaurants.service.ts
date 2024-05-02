@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, FindOneOptions, Repository } from 'typeorm';
 import { RestaurantEntity } from './entities/restaurant.entity';
@@ -11,7 +15,7 @@ import { JwtService } from '@/modules/jwt/jwt.service';
 import { ETokenType } from '@/modules/jwt/enums/token.-type.enum';
 
 @Injectable()
-export class Restaurants {
+export class RestaurantsService {
   constructor(
     @InjectRepository(RestaurantEntity)
     private readonly restaurantRepository: Repository<RestaurantEntity>,
@@ -19,7 +23,18 @@ export class Restaurants {
     private readonly jwtService: JwtService,
   ) {}
 
-  async findAll() {
+  async findAll({ columns }: { columns?: string }) {
+    if (columns) {
+      try {
+        return await this.restaurantRepository
+          .createQueryBuilder('restaurant')
+          .select(columns)
+          .getRawMany();
+      } catch (error) {
+        throw new BadRequestException('Invalid columns');
+      }
+    }
+
     return this.restaurantRepository.find();
   }
 

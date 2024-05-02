@@ -1,24 +1,30 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { Restaurants } from './restaurants';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { RestaurantsService } from './restaurants.service';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { RestaurantEntity } from './entities/restaurant.entity';
 
 @ApiTags('restaurants')
 @Controller('restaurants')
 export class RestaurantsController {
-  constructor(private readonly restaurants: Restaurants) {}
+  constructor(private readonly restaurantsService: RestaurantsService) {}
 
   @Get()
   @ApiOkResponse({ type: [RestaurantEntity] })
-  findAll() {
-    return this.restaurants.findAll();
+  @ApiQuery({ name: 'columns', required: false })
+  findAll(@Query('columns') columns?: string) {
+    return this.restaurantsService.findAll({ columns });
   }
 
   @Get(':restaurantId')
   @ApiOkResponse({ type: RestaurantEntity })
   findOne(@Param('restaurantId') restaurantId: string) {
-    return this.restaurants.findOne({ where: { id: restaurantId } });
+    return this.restaurantsService.findOne({ where: { id: restaurantId } });
   }
 
   @Post()
@@ -26,6 +32,6 @@ export class RestaurantsController {
     type: RestaurantEntity,
   })
   create(@Body() createRestaurantDto: CreateRestaurantDto) {
-    return this.restaurants.create(createRestaurantDto);
+    return this.restaurantsService.create(createRestaurantDto);
   }
 }
