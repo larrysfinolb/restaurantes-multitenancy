@@ -18,7 +18,8 @@ export class RestaurantsController {
   @ApiOkResponse({ type: [RestaurantEntity] })
   @ApiQuery({ name: 'columns', required: false })
   findAll(@Query('columns') columns?: string) {
-    return this.restaurantsService.findAll({ columns });
+    //return this.restaurantsService.findAll({ columns });
+    return {"test":"hello world!!"};
   }
 
   @Get(':restaurantId')
