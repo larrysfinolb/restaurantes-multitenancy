@@ -6,7 +6,7 @@ name: Build and deploy Node.js app to Azure Web App - restaurants-multitenancy(s
 on:
   push:
     branches:
-      - development
+      - NINGUNA_RAMA
   workflow_dispatch:
 
 jobs:
